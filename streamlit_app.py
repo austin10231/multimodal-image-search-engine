@@ -114,7 +114,7 @@ def main():
         """
         <style>
         :root {
-          --bg: #f8f9fa;
+          --bg: #ffffff;
           --ink: #202124;
           --muted: #5f6368;
           --line: #dfe1e5;
@@ -136,13 +136,13 @@ def main():
           position: fixed;
         }
         .block-container {
-          width: min(1120px, 94vw);
+          width: min(1080px, 94vw);
           margin: 0 auto;
-          padding-top: 38px;
-          padding-bottom: 48px;
+          padding-top: 26px;
+          padding-bottom: 44px;
         }
         .hero {
-          min-height: 38vh;
+          min-height: 34vh;
           display: grid;
           place-items: center;
           text-align: center;
@@ -151,17 +151,17 @@ def main():
           margin: 0;
           color: #202124;
           font-family: "Arial", "Helvetica", sans-serif;
-          font-size: clamp(52px, 8vw, 86px);
+          font-size: clamp(58px, 8vw, 92px);
           font-weight: 600;
-          letter-spacing: -1px;
+          letter-spacing: -1.5px;
           line-height: 1;
         }
         .logo-accent { color: #1a73e8; }
         .subtitle {
-          margin: 14px auto 24px;
+          margin: 12px auto 18px;
           max-width: 760px;
-          color: #5f6368;
-          font-size: 16px;
+          color: var(--muted);
+          font-size: 15px;
           line-height: 1.5;
         }
 
@@ -169,25 +169,26 @@ def main():
           border: 0 !important;
           background: transparent !important;
           padding: 0 !important;
-          margin: 0 auto 10px !important;
+          margin: 0 auto !important;
           max-width: 760px;
         }
         div[data-testid="stTextInput"] [data-baseweb="input"] {
-          border: 1px solid #dfe1e5 !important;
+          border: 1px solid var(--line) !important;
           border-radius: 999px !important;
           background: #fff !important;
-          box-shadow: 0 1px 6px rgba(32, 33, 36, 0.12) !important;
+          box-shadow: 0 1px 6px rgba(32,33,36,.18) !important;
           min-height: 50px;
+          transition: box-shadow 0.18s ease !important;
         }
         div[data-testid="stTextInput"] [data-baseweb="input"]:focus-within {
-          border-color: #dfe1e5 !important;
-          box-shadow: 0 1px 8px rgba(32, 33, 36, 0.2) !important;
+          box-shadow: 0 2px 12px rgba(32,33,36,.22) !important;
+          border-color: var(--line) !important;
         }
         div[data-testid="stTextInput"] input {
-          color: #202124 !important;
-          font-size: 17px !important;
-          padding-left: 18px !important;
-          padding-right: 18px !important;
+          color: var(--ink) !important;
+          font-size: 18px !important;
+          padding-left: 20px !important;
+          padding-right: 20px !important;
         }
         div[data-testid="stFormSubmitButton"] button {
           border: 1px solid #dadce0 !important;
@@ -195,47 +196,45 @@ def main():
           background: #f8f9fa !important;
           color: #3c4043 !important;
           font-size: 14px !important;
-          height: 38px !important;
-          padding: 0 20px !important;
-          margin-top: 12px !important;
+          height: 36px !important;
+          padding: 0 18px !important;
+          margin-top: 10px !important;
         }
         div[data-testid="stFormSubmitButton"] button:hover {
-          border-color: #dadce0 !important;
-          box-shadow: 0 1px 1px rgba(0,0,0,0.1) !important;
-          background: #f8f9fa !important;
+          box-shadow: 0 1px 2px rgba(60,64,67,.2) !important;
         }
         .helper {
           text-align: center;
-          margin: 8px auto 0;
-          color: #5f6368;
-          font-size: 13px;
+          margin: 10px auto 0;
+          color: var(--muted);
+          font-size: 12px;
           max-width: 760px;
         }
         .status {
           text-align: center;
-          margin: 8px auto 30px;
-          color: #5f6368;
-          font-size: 13px;
+          margin: 10px auto 24px;
+          color: var(--muted);
+          font-size: 12px;
           min-height: 18px;
         }
         .results-head {
           display: flex;
           align-items: baseline;
           justify-content: space-between;
-          margin: 10px 2px 10px;
+          margin: 8px 2px 10px;
           gap: 10px;
           flex-wrap: wrap;
         }
         .results-title {
           margin: 0;
           color: #202124;
-          font-size: 28px;
+          font-size: 24px;
           font-weight: 650;
         }
         .results-note {
           margin: 0;
-          color: #5f6368;
-          font-size: 13px;
+          color: var(--muted);
+          font-size: 12px;
         }
         .results {
           display: grid;
@@ -250,9 +249,7 @@ def main():
           box-shadow: 0 1px 3px rgba(60,64,67,.12);
           transition: transform 0.15s ease;
         }
-        .card:hover {
-          transform: translateY(-2px);
-        }
+        .card:hover { transform: translateY(-2px); }
         .thumb {
           width: 100%;
           aspect-ratio: 4 / 3;
@@ -263,29 +260,19 @@ def main():
         .thumb-missing {
           display: grid;
           place-items: center;
-          color: #5f6368;
+          color: var(--muted);
           font-size: 12px;
         }
-        .meta {
-          padding: 10px 12px 12px;
-          font-size: 13px;
-          line-height: 1.5;
-        }
-        .score {
-          color: #1a73e8;
-          font-weight: 700;
-        }
+        .meta { padding: 10px 12px 12px; font-size: 13px; line-height: 1.5; }
+        .score { color: var(--brand); font-weight: 700; }
         .id {
-          color: #5f6368;
+          color: var(--muted);
           font-family: "Menlo", "Monaco", "Courier New", monospace;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
-        .empty {
-          color: #5f6368;
-          margin-top: 6px;
-        }
+        .empty { color: var(--muted); margin-top: 6px; }
         </style>
         """,
         unsafe_allow_html=True,
@@ -296,7 +283,7 @@ def main():
         <section class="hero">
           <div>
             <h1 class="logo">Lens<span class="logo-accent">Seek</span></h1>
-            <p class="subtitle">Search images with natural language. Type what you want to see, and the engine returns semantically similar photos.</p>
+            <p class="subtitle">Search images in natural language.</p>
           </div>
         </section>
         """,
@@ -327,7 +314,7 @@ def main():
             submitted = st.form_submit_button("Google Search", use_container_width=True)
 
     st.markdown(
-        "<p class='helper'>Tip: Try: \"a dog running on grass\" or \"people hiking in mountains\".</p>",
+        "<p class='helper'>Try: \"a dog running on grass\" · \"people hiking in mountains\" · \"city street at night\"</p>",
         unsafe_allow_html=True,
     )
 
