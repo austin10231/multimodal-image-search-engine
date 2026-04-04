@@ -1,0 +1,24 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# Virtual env
+.venv/
+venv/
+
+# Large/raw dataset
+data/Images/
+data/captions.txt
+
+# Generated artifacts
+data/processed_samples.csv
+data/image_embeddings.jsonl
+data/query_embedding.json
+data/search_results*.json
+data/image_embeddings_check.jsonl
+
+# Logs / diagnostics
+*.ips
