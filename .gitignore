@@ -22,3 +22,9 @@ data/image_embeddings_check.jsonl
 
 # Logs / diagnostics
 *.ips
+
+# Archives / temp
+*.zip
+
+# Remote init noise
+1

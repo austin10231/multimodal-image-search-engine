@@ -4,7 +4,7 @@ A lightweight multimodal image search project:
 - Encode images with CLIP
 - Encode text queries with CLIP
 - Retrieve top-k similar images with FAISS
-- View results in a simple web UI
+- View results in a Streamlit web UI
 
 ## Project Structure
 - `src/load_data.py`: load image-caption data
@@ -13,7 +13,8 @@ A lightweight multimodal image search project:
 - `src/text_embedding.py`: generate query embeddings
 - `src/search_basic.py`: baseline similarity search
 - `src/search_faiss.py`: FAISS search
-- `web_app.py`: Flask web app
+- `streamlit_app.py`: Streamlit app (deploy entry)
+- `demo_data/`: deployable demo embeddings + images
 
 ## Quick Start
 1. Install dependencies:
@@ -21,17 +22,26 @@ A lightweight multimodal image search project:
 pip install -r requirements.txt
 ```
 
-2. Run the web app:
+2. Run Streamlit:
 ```bash
-python web_app.py
+streamlit run streamlit_app.py
 ```
 
 3. Open:
-`http://127.0.0.1:8000`
+`http://localhost:8501`
+
+## Streamlit Cloud Deploy
+1. Push this repo to GitHub
+2. In Streamlit Community Cloud, click **New app**
+3. Select:
+   - Repository: `austin10231/multimodal-image-search-engine`
+   - Branch: `main`
+   - Main file path: `streamlit_app.py`
+4. Click **Deploy**
 
 ## Notes
-- If Python crashes on macOS (OpenMP conflict), keep thread limits enabled in code.
-- Default data files are under `data/`.
+- The app uses `demo_data/` by default for cloud-friendly deployment.
+- First run may take longer because CLIP model needs to download.
 
 ## Copyright
 Copyright (c) Mutian He 2026

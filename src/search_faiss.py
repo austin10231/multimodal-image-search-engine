@@ -1,6 +1,11 @@
 import argparse  # 导入 argparse，用于解析命令行参数
 import json  # 导入 json，用于读取和保存 JSON 数据
+import os  # 导入 os，用于设置 OpenMP 环境变量
 from pathlib import Path  # 导入 Path，用于处理路径
+
+# 在导入 faiss 前设置线程相关环境变量，降低 OpenMP 冲突概率
+os.environ.setdefault("OMP_NUM_THREADS", "1")  # 限制 OpenMP 线程数
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")  # 允许重复 KMP 运行时（兼容性兜底）
 
 import faiss  # 导入 faiss，用于高效向量检索
 import numpy as np  # 导入 numpy，用于向量数组计算
