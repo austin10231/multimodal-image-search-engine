@@ -335,7 +335,7 @@ def main():
         )
         c1, c2, c3 = st.columns([3, 2, 3])
         with c2:
-            submitted = st.button("Google Search", use_container_width=False)
+            submitted = st.button("Search", use_container_width=False)
 
     st.markdown(
         "<p class='helper'>Try: \"a dog running on grass\" · \"people hiking in mountains\" · \"city street at night\"</p>",
