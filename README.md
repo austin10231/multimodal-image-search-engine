@@ -1,29 +1,28 @@
 # Multimodal Image Search (CLIP + FAISS)
 
-A lightweight multimodal image search project with Flask web UI.
+A lightweight multimodal image search project with:
+- `streamlit_app.py` (Streamlit, Chrome-like search UI)
+- `web_app.py` (Flask)
 
-## Quick Start (Flask)
+## Quick Start (Streamlit)
 ```bash
 pip install -r requirements.txt
-python web_app.py
+streamlit run streamlit_app.py
 ```
-Open: `http://127.0.0.1:8000`
+Open: `http://localhost:8501`
 
-## Render Deploy (Recommended for Flask UI)
-This repo includes `render.yaml`.
-
+## Streamlit Cloud Deploy
 1. Push latest code to GitHub.
-2. In Render, click **New +** -> **Blueprint**.
-3. Select this repository.
-4. Render auto-detects `render.yaml`; click **Apply**.
-5. After deploy, open the generated Render URL.
+2. In Streamlit Community Cloud, click **New app**.
+3. Select:
+   - Repository: `austin10231/multimodal-image-search-engine`
+   - Branch: `main`
+   - Main file path: `streamlit_app.py`
+4. Click **Deploy**.
 
-## Data Mode
-`web_app.py` auto-selects data:
-- `full`: uses `data/image_embeddings.jsonl` + `data/Images/`
-- `demo`: fallback to `demo_data/image_embeddings_demo.jsonl` + `demo_data/images/`
-
-For cloud deploy, `demo` mode is used by default.
+## Notes
+- Streamlit app prefers `demo_data/` for lower memory usage in cloud.
+- Flask/Render files are kept in repo but optional.
 
 ## Copyright
 Copyright (c) Mutian He 2026
