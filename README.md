@@ -1,8 +1,6 @@
 # Multimodal Image Search (CLIP + FAISS)
 
-A lightweight multimodal image search project with two web entries:
-- `web_app.py` (Flask, same UI style as local demo)
-- `streamlit_app.py` (Streamlit)
+A lightweight multimodal image search project with Flask web UI.
 
 ## Quick Start (Flask)
 ```bash
