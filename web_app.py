@@ -24,6 +24,20 @@ PROJECT_ROOT = Path(__file__).resolve().parent  # 当前文件就在项目根目
 DATA_DIR = PROJECT_ROOT / "data"  # 数据目录路径
 IMAGES_DIR = DATA_DIR / "Images"  # 图片目录路径
 IMAGE_EMBEDDINGS_FILE = DATA_DIR / "image_embeddings.jsonl"  # 图片向量文件路径
+DEMO_DIR = PROJECT_ROOT / "demo_data"  # Demo 数据目录路径
+DEMO_IMAGES_DIR = DEMO_DIR / "images"  # Demo 图片目录路径
+DEMO_IMAGE_EMBEDDINGS_FILE = DEMO_DIR / "image_embeddings_demo.jsonl"  # Demo 图片向量文件路径
+
+
+def choose_runtime_assets() -> tuple[Path | None, Path | None, str]:  # 选择运行时使用的向量文件与图片目录
+    if IMAGE_EMBEDDINGS_FILE.exists() and IMAGES_DIR.exists():  # 若本地全量数据存在
+        return IMAGE_EMBEDDINGS_FILE, IMAGES_DIR, "full"  # 优先使用全量数据
+    if DEMO_IMAGE_EMBEDDINGS_FILE.exists() and DEMO_IMAGES_DIR.exists():  # 若只有 demo 数据可用
+        return DEMO_IMAGE_EMBEDDINGS_FILE, DEMO_IMAGES_DIR, "demo"  # 回退到 demo 数据
+    return None, None, "missing"  # 都不存在时标记缺失
+
+
+ACTIVE_EMBEDDINGS_FILE, ACTIVE_IMAGES_DIR, DATA_MODE = choose_runtime_assets()  # 记录当前生效的数据来源模式
 
 app = Flask(__name__)  # 创建 Flask 应用实例
 searcher = None  # 全局 FAISS 检索器（延迟初始化）
@@ -35,7 +49,9 @@ text_device = None  # 全局文本推理设备（延迟初始化）
 def get_searcher() -> FaissSearcher:  # 获取 FAISS 检索器（首次调用时构建）
     global searcher  # 声明使用全局变量
     if searcher is None:  # 若尚未初始化
-        searcher = FaissSearcher(IMAGE_EMBEDDINGS_FILE)  # 加载向量并构建索引
+        if ACTIVE_EMBEDDINGS_FILE is None:  # 若不存在可用向量文件
+            raise FileNotFoundError("No embedding file found. Expected data/image_embeddings.jsonl or demo_data/image_embeddings_demo.jsonl")  # 给出明确报错
+        searcher = FaissSearcher(ACTIVE_EMBEDDINGS_FILE)  # 加载向量并构建索引
     return searcher  # 返回可用检索器
 
 
@@ -382,7 +398,21 @@ def home():
 
 @app.get("/images/<path:filename>")  # 图片服务：按文件名返回本地图片
 def serve_image(filename: str):
-    return send_from_directory(IMAGES_DIR, filename)  # 从 data/Images 目录中返回图片文件
+    if ACTIVE_IMAGES_DIR is None:  # 若没有可用图片目录
+        return jsonify({"error": "image directory not available"}), 404  # 返回 404 错误
+    return send_from_directory(ACTIVE_IMAGES_DIR, filename)  # 从当前生效图片目录中返回图片文件
+
+
+@app.get("/healthz")  # 健康检查接口：便于 Render 判断服务是否正常
+def healthz():
+    return jsonify(  # 返回当前运行模式与关键路径状态
+        {
+            "ok": True,  # 服务可用
+            "data_mode": DATA_MODE,  # 当前数据模式：full/demo/missing
+            "embeddings_file": str(ACTIVE_EMBEDDINGS_FILE) if ACTIVE_EMBEDDINGS_FILE else None,  # 当前向量文件路径
+            "images_dir": str(ACTIVE_IMAGES_DIR) if ACTIVE_IMAGES_DIR else None,  # 当前图片目录路径
+        }
+    )
 
 
 @app.post("/api/search")  # 搜索接口：接收 query 并返回 Top-K 结果
@@ -399,9 +429,12 @@ def api_search():
         return jsonify({"error": "query cannot be empty"}), 400  # 空查询返回 400
     k = max(1, min(20, k))  # 把 k 限制在 1 到 20 区间
 
-    start = time.perf_counter()  # 记录开始时间
-    query_embedding = encode_query_live(query)  # 计算查询文本向量
-    results = get_searcher().search(query_embedding, k=k)  # 执行 FAISS 检索
+    try:
+        start = time.perf_counter()  # 记录开始时间
+        query_embedding = encode_query_live(query)  # 计算查询文本向量
+        results = get_searcher().search(query_embedding, k=k)  # 执行 FAISS 检索
+    except FileNotFoundError as e:  # 数据文件缺失时返回明确错误
+        return jsonify({"error": str(e)}), 500
     for item in results:  # 为每条结果补充图片访问 URL
         filename = Path(item["image_path"]).name  # 从绝对路径提取图片文件名
         item["image_url"] = f"/images/{filename}"  # 生成前端可直接访问的图片链接
@@ -418,4 +451,5 @@ def api_search():
 
 
 if __name__ == "__main__":  # 仅当脚本被直接运行时执行
-    app.run(host="127.0.0.1", port=8000, debug=False)  # 启动本地开发服务器
+    port = int(os.environ.get("PORT", "8000"))  # Render 会通过 PORT 环境变量注入端口
+    app.run(host="0.0.0.0", port=port, debug=False)  # 启动服务并监听所有网卡

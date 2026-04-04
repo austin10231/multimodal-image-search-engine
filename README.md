@@ -1,47 +1,31 @@
 # Multimodal Image Search (CLIP + FAISS)
 
-A lightweight multimodal image search project:
-- Encode images with CLIP
-- Encode text queries with CLIP
-- Retrieve top-k similar images with FAISS
-- View results in a Streamlit web UI
+A lightweight multimodal image search project with two web entries:
+- `web_app.py` (Flask, same UI style as local demo)
+- `streamlit_app.py` (Streamlit)
 
-## Project Structure
-- `src/load_data.py`: load image-caption data
-- `src/data_processing.py`: clean data (one caption per image)
-- `src/image_embedding.py`: generate image embeddings
-- `src/text_embedding.py`: generate query embeddings
-- `src/search_basic.py`: baseline similarity search
-- `src/search_faiss.py`: FAISS search
-- `streamlit_app.py`: Streamlit app (deploy entry)
-- `demo_data/`: deployable demo embeddings + images
-
-## Quick Start
-1. Install dependencies:
+## Quick Start (Flask)
 ```bash
 pip install -r requirements.txt
+python web_app.py
 ```
+Open: `http://127.0.0.1:8000`
 
-2. Run Streamlit:
-```bash
-streamlit run streamlit_app.py
-```
+## Render Deploy (Recommended for Flask UI)
+This repo includes `render.yaml`.
 
-3. Open:
-`http://localhost:8501`
+1. Push latest code to GitHub.
+2. In Render, click **New +** -> **Blueprint**.
+3. Select this repository.
+4. Render auto-detects `render.yaml`; click **Apply**.
+5. After deploy, open the generated Render URL.
 
-## Streamlit Cloud Deploy
-1. Push this repo to GitHub
-2. In Streamlit Community Cloud, click **New app**
-3. Select:
-   - Repository: `austin10231/multimodal-image-search-engine`
-   - Branch: `main`
-   - Main file path: `streamlit_app.py`
-4. Click **Deploy**
+## Data Mode
+`web_app.py` auto-selects data:
+- `full`: uses `data/image_embeddings.jsonl` + `data/Images/`
+- `demo`: fallback to `demo_data/image_embeddings_demo.jsonl` + `demo_data/images/`
 
-## Notes
-- The app uses `demo_data/` by default for cloud-friendly deployment.
-- First run may take longer because CLIP model needs to download.
+For cloud deploy, `demo` mode is used by default.
 
 ## Copyright
 Copyright (c) Mutian He 2026
