@@ -93,6 +93,14 @@ def render_results_html(results: list[dict]) -> str:  # 用和本地版一致的
     return f'<section class="results">{"".join(cards)}</section>'  # 返回完整结果网格
 
 
+def parse_k(raw_k: str, default_k: int = 8) -> int:  # 把 K 输入安全解析为 1~20 的整数
+    try:
+        k = int(str(raw_k).strip())  # 尝试转换整数
+    except ValueError:
+        k = default_k  # 失败时回退默认值
+    return max(1, min(20, k))  # 限制区间
+
+
 def main():  # Streamlit 页面主函数
     st.set_page_config(page_title="LensSeek", layout="wide", initial_sidebar_state="collapsed")  # 设置页面配置
 
@@ -109,8 +117,12 @@ def main():  # Streamlit 页面主函数
           --card: #ffffff;
           --shadow: 0 10px 30px rgba(23, 38, 74, 0.08);
         }
-        * { box-sizing: border-box; }
+        * {
+          box-sizing: border-box;
+        }
         .stApp {
+          margin: 0;
+          min-height: 100vh;
           background: var(--bg);
           color: var(--ink);
           font-family: "Avenir Next", "Trebuchet MS", sans-serif;
@@ -127,10 +139,8 @@ def main():  # Streamlit 页面主函数
         }
         .block-container {
           width: min(1120px, 94vw);
-          max-width: 1120px;
           margin: 0 auto;
-          padding-top: 36px;
-          padding-bottom: 56px;
+          padding: 36px 0 56px;
         }
         .hero {
           min-height: 45vh;
@@ -168,12 +178,14 @@ def main():  # Streamlit 页面主函数
         .brand {
           margin: 0;
           font-family: "Baskerville", "Book Antiqua", serif;
-          font-size: clamp(44px, 7vw, 70px);
+          font-size: clamp(66px, 7vw, 88px);
           letter-spacing: 0.6px;
           line-height: 1.02;
           font-weight: 700;
         }
-        .brand-accent { color: var(--brand); }
+        .brand-accent {
+          color: var(--brand);
+        }
         .sub {
           margin: 10px auto 22px;
           max-width: 680px;
@@ -196,8 +208,7 @@ def main():  # Streamlit 页面主函数
           color: var(--muted);
           margin: 0 0 6px 2px;
         }
-        div[data-testid="stTextInput"] input,
-        div[data-testid="stNumberInput"] input {
+        .search-shell div[data-testid="stTextInput"] input {
           width: 100%;
           border: 1px solid var(--line) !important;
           border-radius: 999px !important;
@@ -207,14 +218,13 @@ def main():  # Streamlit 页面主函数
           color: var(--ink) !important;
           outline: none !important;
           transition: border-color 0.18s ease, box-shadow 0.18s ease !important;
-          height: auto !important;
+          box-shadow: none !important;
         }
-        div[data-testid="stTextInput"] input:focus,
-        div[data-testid="stNumberInput"] input:focus {
+        .search-shell div[data-testid="stTextInput"] input:focus {
           border-color: var(--brand) !important;
           box-shadow: 0 0 0 4px var(--brand-soft) !important;
         }
-        div[data-testid="stFormSubmitButton"] button {
+        .search-shell div[data-testid="stButton"] button {
           width: 100%;
           border: none !important;
           border-radius: 999px !important;
@@ -225,10 +235,11 @@ def main():  # Streamlit 页面主函数
           font-weight: 650 !important;
           cursor: pointer;
           margin-top: 1.68rem !important;
-          height: auto !important;
+          min-height: 50px !important;
         }
-        div[data-testid="stFormSubmitButton"] button:hover { filter: brightness(1.04); }
-        div[data-testid="stForm"] { margin: 0; border: 0; padding: 0; }
+        .search-shell div[data-testid="stButton"] button:hover {
+          filter: brightness(1.04);
+        }
         .helper {
           margin: 10px 2px 2px;
           color: var(--muted);
@@ -306,17 +317,24 @@ def main():  # Streamlit 页面主函数
           text-overflow: ellipsis;
         }
         @media (max-width: 860px) {
-          .hero { min-height: 40vh; }
-          div[data-testid="stHorizontalBlock"] {
+          .hero {
+            min-height: 40vh;
+          }
+          .brand {
+            font-size: clamp(44px, 12vw, 70px);
+          }
+          .search-shell div[data-testid="stHorizontalBlock"] {
             display: grid !important;
             grid-template-columns: 1fr !important;
             gap: 0.65rem !important;
           }
-          div[data-testid="stFormSubmitButton"] button {
+          .search-shell div[data-testid="stButton"] button {
             border-radius: 14px !important;
             margin-top: 0.2rem !important;
           }
-          .search-shell { border-radius: 20px; }
+          .search-shell {
+            border-radius: 20px;
+          }
         }
         </style>
         """,
@@ -338,69 +356,72 @@ def main():  # Streamlit 页面主函数
     )
 
     if "last_results" not in st.session_state:  # 初始化结果缓存
-        st.session_state["last_results"] = []  # 默认无结果
+        st.session_state["last_results"] = []
     if "last_elapsed_ms" not in st.session_state:  # 初始化耗时缓存
-        st.session_state["last_elapsed_ms"] = None  # 默认无耗时
+        st.session_state["last_elapsed_ms"] = None
     if "last_query" not in st.session_state:  # 初始化查询缓存
-        st.session_state["last_query"] = ""  # 默认空查询
+        st.session_state["last_query"] = ""
     if "last_k" not in st.session_state:  # 初始化 K 缓存
-        st.session_state["last_k"] = 8  # 默认 Top-K=8
+        st.session_state["last_k"] = 8
 
     image_file = DEMO_IMAGE_FILE if DEMO_IMAGE_FILE.exists() else FULL_IMAGE_FILE  # 云端优先使用 demo 数据
     if not image_file.exists():  # 若向量文件不存在
-        st.error(f"Embedding file not found: {image_file}")  # 提示缺失
-        st.stop()  # 中断执行
+        st.error(f"Embedding file not found: {image_file}")
+        st.stop()
 
     st.markdown("<section class='search-shell'>", unsafe_allow_html=True)  # 搜索框容器开始
-    with st.form("search_form", clear_on_submit=False):  # 搜索表单
-        c1, c2, c3 = st.columns([7, 2, 2])  # 三列布局
 
-        with c1:
-            st.markdown("<label class='label'>Search Query (describe the image you want)</label>", unsafe_allow_html=True)  # 查询标签
-            query = st.text_input(
-                "query_hidden",
-                value=st.session_state.get("last_query", ""),
-                placeholder="e.g. a dog running on grass",
-                label_visibility="collapsed",
-            )  # 查询输入框
+    c1, c2, c3 = st.columns([7, 2, 2], gap="small")  # 三列布局
 
-        with c2:
-            st.markdown("<label class='label'>Top-K (how many results)</label>", unsafe_allow_html=True)  # K 值标签
-            k = st.number_input(
-                "k_hidden",
-                min_value=1,
-                max_value=20,
-                value=int(st.session_state.get("last_k", 8)),
-                step=1,
-                label_visibility="collapsed",
-            )  # K 输入框
+    with c1:
+        st.markdown("<label class='label'>Search Query (describe the image you want)</label>", unsafe_allow_html=True)  # 查询标签
+        query = st.text_input(
+            "query_input_label",
+            value=st.session_state.get("last_query", ""),
+            placeholder="e.g. a dog running on grass",
+            label_visibility="collapsed",
+            key="query_input_widget",
+        )  # 查询输入框
 
-        with c3:
-            st.markdown("<label class='label'>Action</label>", unsafe_allow_html=True)  # 按钮标签
-            submitted = st.form_submit_button("Search", use_container_width=True)  # 搜索按钮
+    with c2:
+        st.markdown("<label class='label'>Top-K (how many results)</label>", unsafe_allow_html=True)  # K 值标签
+        k_text = st.text_input(
+            "k_input_label",
+            value=str(st.session_state.get("last_k", 8)),
+            label_visibility="collapsed",
+            key="k_input_widget",
+        )  # K 输入框（文本）
 
-        st.markdown(
-            "<p class='helper'>Tip: Use subject + action + scene, for example: \"two children playing football in a park\".</p>",
-            unsafe_allow_html=True,
-        )  # 提示文案
+    with c3:
+        st.markdown("<label class='label'>Action</label>", unsafe_allow_html=True)  # 按钮标签
+        search_clicked = st.button("Search", use_container_width=True, key="search_btn")  # 搜索按钮
+
+    st.markdown(
+        "<p class='helper'>Tip: Use subject + action + scene, for example: \"two children playing football in a park\".</p>",
+        unsafe_allow_html=True,
+    )  # 提示文案
 
     status_text = "Ready. Enter a query and click Search."  # 默认状态文案
-    if submitted:  # 点击搜索后执行检索
+
+    if search_clicked:  # 点击搜索后执行检索
         query_clean = query.strip()  # 去除首尾空格
+        k = parse_k(k_text, default_k=int(st.session_state.get("last_k", 8)))  # 解析并限制 K 值
+
         if query_clean == "":  # 空查询校验
-            status_text = "Query cannot be empty."  # 空查询状态提示
+            status_text = "Query cannot be empty."
+            st.session_state["last_k"] = k  # 空查询也回写规范化 K
         else:
             start = time.perf_counter()  # 记录开始时间
             query_embedding = encode_query_live(query_clean)  # 计算查询向量
-            results = get_searcher(str(image_file)).search(query_embedding, k=int(k))  # 执行检索
+            results = get_searcher(str(image_file)).search(query_embedding, k=k)  # 执行检索
             elapsed_ms = int((time.perf_counter() - start) * 1000)  # 计算耗时
 
             st.session_state["last_results"] = results  # 写入结果缓存
             st.session_state["last_elapsed_ms"] = elapsed_ms  # 写入耗时缓存
             st.session_state["last_query"] = query_clean  # 写入查询缓存
-            st.session_state["last_k"] = int(k)  # 写入 K 缓存
+            st.session_state["last_k"] = k  # 写入 K 缓存
 
-            status_text = f'Query: "{query_clean}" · {len(results)} results · {elapsed_ms} ms'  # 成功状态文案
+            status_text = f'Query: "{query_clean}" · {len(results)} results · {elapsed_ms} ms'
 
     elif st.session_state.get("last_results"):  # 若已有上次结果则保留状态
         status_text = (
