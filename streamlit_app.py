@@ -136,13 +136,13 @@ def main():
           position: fixed;
         }
         .block-container {
-          width: min(1080px, 94vw);
+          width: min(980px, 94vw);
           margin: 0 auto;
-          padding-top: 26px;
+          padding-top: 18px;
           padding-bottom: 44px;
         }
         .hero {
-          min-height: 34vh;
+          min-height: 28vh;
           display: grid;
           place-items: center;
           text-align: center;
@@ -158,10 +158,10 @@ def main():
         }
         .logo-accent { color: #1a73e8; }
         .subtitle {
-          margin: 12px auto 18px;
+          margin: 10px auto 14px;
           max-width: 760px;
           color: var(--muted);
-          font-size: 15px;
+          font-size: 14px;
           line-height: 1.5;
         }
 
@@ -172,23 +172,37 @@ def main():
           margin: 0 auto !important;
           max-width: 760px;
         }
-        div[data-testid="stTextInput"] [data-baseweb="input"] {
+        div[data-testid="stTextInput"] [data-baseweb="base-input"] {
+          background: #fff !important;
           border: 1px solid var(--line) !important;
           border-radius: 999px !important;
-          background: #fff !important;
           box-shadow: 0 1px 6px rgba(32,33,36,.18) !important;
           min-height: 50px;
+        }
+        div[data-testid="stTextInput"] [data-baseweb="input"] {
+          background: #fff !important;
+          border: 1px solid var(--line) !important;
+          border-radius: 999px !important;
           transition: box-shadow 0.18s ease !important;
+        }
+        div[data-testid="stTextInput"] [data-baseweb="input"] > div {
+          background: #fff !important;
+          border-radius: 999px !important;
         }
         div[data-testid="stTextInput"] [data-baseweb="input"]:focus-within {
           box-shadow: 0 2px 12px rgba(32,33,36,.22) !important;
           border-color: var(--line) !important;
         }
         div[data-testid="stTextInput"] input {
+          background: transparent !important;
           color: var(--ink) !important;
           font-size: 18px !important;
           padding-left: 20px !important;
           padding-right: 20px !important;
+        }
+        div[data-testid="stTextInput"] input::placeholder {
+          color: #80868b !important;
+          opacity: 1 !important;
         }
         div[data-testid="stFormSubmitButton"] button {
           border: 1px solid #dadce0 !important;
