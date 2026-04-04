@@ -165,13 +165,6 @@ def main():
           line-height: 1.5;
         }
 
-        div[data-testid="stForm"] {
-          border: 0 !important;
-          background: transparent !important;
-          padding: 0 !important;
-          margin: 0 auto !important;
-          max-width: 760px;
-        }
         div[data-testid="stTextInput"] [data-baseweb="base-input"] {
           background: #fff !important;
           border: 1px solid var(--line) !important;
@@ -204,7 +197,7 @@ def main():
           color: #80868b !important;
           opacity: 1 !important;
         }
-        div[data-testid="stFormSubmitButton"] button {
+        div[data-testid="stButton"] button {
           border: 1px solid #dadce0 !important;
           border-radius: 6px !important;
           background: #f8f9fa !important;
@@ -214,7 +207,7 @@ def main():
           padding: 0 18px !important;
           margin-top: 10px !important;
         }
-        div[data-testid="stFormSubmitButton"] button:hover {
+        div[data-testid="stButton"] button:hover {
           box-shadow: 0 1px 2px rgba(60,64,67,.2) !important;
         }
         .helper {
@@ -316,16 +309,18 @@ def main():
         st.error("Embedding file not found. Expected demo_data/image_embeddings_demo.jsonl or data/image_embeddings.jsonl")
         st.stop()
 
-    with st.form("search_form", clear_on_submit=False):
+    outer_l, outer_c, outer_r = st.columns([1.2, 6, 1.2])  # 中间列控制搜索框宽度
+    with outer_c:
         query = st.text_input(
             "query_hidden",
             value=st.session_state.get("last_query", ""),
             placeholder="Search images...",
             label_visibility="collapsed",
+            autocomplete="new-password",  # 关闭浏览器自动补全，避免浮层重叠
         )
         c1, c2, c3 = st.columns([3, 2, 3])
         with c2:
-            submitted = st.form_submit_button("Google Search", use_container_width=True)
+            submitted = st.button("Google Search", use_container_width=True)
 
     st.markdown(
         "<p class='helper'>Try: \"a dog running on grass\" · \"people hiking in mountains\" · \"city street at night\"</p>",
