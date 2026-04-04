@@ -129,6 +129,7 @@ def main():
         [data-testid="stToolbar"],
         [data-testid="stDecoration"],
         [data-testid="stStatusWidget"],
+        [data-testid="InputInstructions"],
         #MainMenu,
         footer {
           visibility: hidden;
@@ -197,18 +198,32 @@ def main():
           color: #80868b !important;
           opacity: 1 !important;
         }
+        div[data-testid="stButton"] {
+          text-align: center;
+        }
         div[data-testid="stButton"] button {
           border: 1px solid #dadce0 !important;
           border-radius: 6px !important;
           background: #f8f9fa !important;
           color: #3c4043 !important;
           font-size: 14px !important;
+          font-weight: 500 !important;
           height: 36px !important;
-          padding: 0 18px !important;
+          min-width: 148px !important;
+          padding: 0 22px !important;
           margin-top: 10px !important;
+          white-space: nowrap !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
         }
         div[data-testid="stButton"] button:hover {
           box-shadow: 0 1px 2px rgba(60,64,67,.2) !important;
+          border-color: #c6c6c6 !important;
+          color: #202124 !important;
+        }
+        div[data-testid="stButton"] button:active {
+          transform: translateY(1px);
         }
         .helper {
           text-align: center;
@@ -320,7 +335,7 @@ def main():
         )
         c1, c2, c3 = st.columns([3, 2, 3])
         with c2:
-            submitted = st.button("Google Search", use_container_width=True)
+            submitted = st.button("Google Search", use_container_width=False)
 
     st.markdown(
         "<p class='helper'>Try: \"a dog running on grass\" · \"people hiking in mountains\" · \"city street at night\"</p>",
