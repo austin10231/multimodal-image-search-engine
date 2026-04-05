@@ -145,7 +145,7 @@ def main():
           padding-bottom: 64px;
         }
         .hero {
-          min-height: 31vh;
+          min-height: 24vh;
           display: grid;
           place-items: center;
           text-align: center;
@@ -154,7 +154,7 @@ def main():
           margin: 0;
           color: #202124;
           font-family: "Arial", "Helvetica", sans-serif;
-          font-size: clamp(70px, 7.8vw, 102px);
+          font-size: clamp(76px, 8.4vw, 110px);
           font-weight: 700;
           letter-spacing: -1.8px;
           line-height: 1;
@@ -260,10 +260,12 @@ def main():
         }
         .results-head {
           display: flex;
-          align-items: baseline;
-          justify-content: space-between;
-          margin: 16px 2px 16px;
-          gap: 10px;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          margin: 16px auto 16px;
+          gap: 4px;
+          flex-direction: column;
           flex-wrap: wrap;
         }
         .results-title {
@@ -279,7 +281,8 @@ def main():
         }
         .results {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(240px, 320px));
+          justify-content: center;
           gap: 14px;
         }
         .card {
@@ -313,10 +316,10 @@ def main():
           overflow: hidden;
           text-overflow: ellipsis;
         }
-        .empty { color: var(--muted); margin-top: 6px; }
+        .empty { color: var(--muted); margin-top: 6px; text-align: center; }
         @media (max-width: 900px) {
-          .hero { min-height: 26vh; }
-          .logo { font-size: clamp(58px, 13vw, 82px); }
+          .hero { min-height: 22vh; }
+          .logo { font-size: clamp(62px, 13vw, 90px); }
           .subtitle { font-size: 15px; }
           div[data-testid="stTextInputRootElement"] { min-height: 60px !important; }
           div[data-testid="stTextInputRootElement"] input,
@@ -332,6 +335,10 @@ def main():
           .status { font-size: 13px; min-height: 22px; }
           .results-title { font-size: 24px; }
           .results-note { font-size: 12px; }
+          .results {
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            justify-content: stretch;
+          }
         }
         </style>
         """,
