@@ -229,7 +229,6 @@ def main():
           letter-spacing: 0.03em;
           color: var(--muted);
           margin: 0 0 6px 2px;
-          font-weight: 600;
         }
         div[data-testid="stForm"] div[data-testid="stTextInput"] {
           margin-bottom: 0 !important;
@@ -278,7 +277,7 @@ def main():
           background: linear-gradient(135deg, #2f66ff, #2e8bff) !important;
           color: #fff !important;
           font-size: 16px !important;
-          font-weight: 700 !important;
+          font-weight: 650 !important;
           min-height: 44px !important;
           box-shadow: 0 6px 14px rgba(49,101,246,.24) !important;
         }
@@ -359,7 +358,7 @@ def main():
           color: var(--muted);
           margin-top: 6px;
         }
-        @media (max-width: 900px) {
+        @media (max-width: 860px) {
           .hero { min-height: 40vh; }
           .logo { font-size: clamp(40px, 11vw, 62px); }
           .subtitle { font-size: 14px; }
