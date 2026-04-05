@@ -189,7 +189,7 @@ def main():
           right: 8%;
         }
         .center {
-          width: min(860px, 100%);
+          width: min(940px, 100%);
           text-align: center;
           z-index: 1;
           position: relative;
@@ -198,7 +198,7 @@ def main():
           margin: 0;
           color: var(--ink);
           font-family: "Baskerville", "Times New Roman", "Georgia", serif;
-          font-size: clamp(58px, 8.2vw, 96px);
+          font-size: clamp(62px, 8.6vw, 104px);
           font-weight: 700;
           letter-spacing: 0.6px;
           line-height: 1.02;
@@ -206,18 +206,20 @@ def main():
         .logo-accent { color: var(--brand); }
         .subtitle {
           margin: 10px auto 14px;
-          max-width: 680px;
+          max-width: 100%;
           color: var(--muted);
-          font-size: 15px;
+          font-size: 14px;
           line-height: 1.6;
+          text-align: center;
+          white-space: nowrap;
         }
         div[data-testid="stForm"] {
           background: #fff;
           border: 1px solid #dbe3ee;
           border-radius: 26px;
           box-shadow: var(--shadow);
-          padding: 16px;
-          max-width: 860px;
+          padding: 20px;
+          max-width: 940px;
           margin: 0 auto;
         }
         div[data-testid="stForm"] > div {
@@ -231,6 +233,9 @@ def main():
           margin: 0 0 6px 2px;
         }
         div[data-testid="stForm"] div[data-testid="stTextInput"] {
+          margin-bottom: 0 !important;
+        }
+        div[data-testid="stForm"] div[data-testid="stNumberInput"] {
           margin-bottom: 0 !important;
         }
         div[data-testid="stForm"] div[data-testid="stTextInputRootElement"] {
@@ -266,6 +271,33 @@ def main():
         div[data-testid="stForm"] div[data-testid="stTextInputRootElement"] input::placeholder {
           color: #8693a5 !important;
           opacity: 1 !important;
+        }
+        div[data-testid="stForm"] div[data-testid="stNumberInput"] [data-baseweb="input"] {
+          background: #fff !important;
+          border: 1px solid var(--line) !important;
+          border-radius: 999px !important;
+          min-height: 50px !important;
+          box-shadow: none !important;
+          transition: border-color 0.18s ease, box-shadow 0.18s ease !important;
+        }
+        div[data-testid="stForm"] div[data-testid="stNumberInput"] [data-baseweb="input"]:focus-within {
+          border-color: var(--brand) !important;
+          box-shadow: 0 0 0 4px var(--brand-soft) !important;
+        }
+        div[data-testid="stForm"] div[data-testid="stNumberInput"] input {
+          color: var(--ink) !important;
+          font-size: 16px !important;
+          font-weight: 600 !important;
+        }
+        div[data-testid="stForm"] div[data-testid="stNumberInput"] button {
+          background: #fff !important;
+          color: #4c5f78 !important;
+          border: 0 !important;
+          box-shadow: none !important;
+        }
+        div[data-testid="stForm"] div[data-testid="stNumberInput"] button:hover {
+          background: #eef2f8 !important;
+          color: var(--ink) !important;
         }
         div[data-testid="stForm"] div[data-testid="stFormSubmitButton"] {
           margin-top: 0 !important;
@@ -361,7 +393,10 @@ def main():
         @media (max-width: 860px) {
           .hero { min-height: 18vh; }
           .logo { font-size: clamp(44px, 11vw, 74px); }
-          .subtitle { font-size: 14px; }
+          .subtitle {
+            font-size: 14px;
+            white-space: normal;
+          }
           div[data-testid="stForm"] {
             border-radius: 20px;
             padding: 14px;
@@ -396,8 +431,8 @@ def main():
         st.session_state["last_k"] = 8
     if "query_input" not in st.session_state:
         st.session_state["query_input"] = st.session_state.get("last_query", "")
-    if "k_input_text" not in st.session_state:
-        st.session_state["k_input_text"] = str(st.session_state.get("last_k", 8))
+    if "k_input" not in st.session_state:
+        st.session_state["k_input"] = int(st.session_state.get("last_k", 8))
 
     image_file = ACTIVE_EMBEDDINGS_FILE
     active_images_dir = ACTIVE_IMAGES_DIR
@@ -416,7 +451,7 @@ def main():
     outer_l, outer_c, outer_r = st.columns([0.3, 11.4, 0.3])  # 中间列控制整体搜索区宽度
     with outer_c:
         with st.form("search_form", clear_on_submit=False):
-            query_col, k_col, action_col = st.columns([1.0, 0.30, 0.22], gap="small")
+            query_col, k_col, action_col = st.columns([1.0, 0.32, 0.22], gap="medium")
             with query_col:
                 st.markdown("<label class='label'>Search Query (describe the image you want)</label>", unsafe_allow_html=True)
                 query = st.text_input(
@@ -428,12 +463,13 @@ def main():
                 )
             with k_col:
                 st.markdown("<label class='label'>Top-K (how many results)</label>", unsafe_allow_html=True)
-                k_raw = st.text_input(
+                k_value = st.number_input(
                     "top_k",
-                    key="k_input_text",
-                    placeholder="8",
+                    min_value=1,
+                    max_value=20,
+                    step=1,
+                    key="k_input",
                     label_visibility="collapsed",
-                    autocomplete="off",
                 )
             with action_col:
                 st.markdown("<label class='label'>Action</label>", unsafe_allow_html=True)
@@ -450,31 +486,23 @@ def main():
         if query_clean == "":
             status_text = "Query cannot be empty."
         else:
-            k_clean = str(k_raw).strip()
+            k_int = max(1, min(20, int(k_value)))
             try:
-                k_int = int(k_clean) if k_clean else 8
-            except (TypeError, ValueError):
-                status_text = "k must be an integer."
-                k_int = None
+                with st.spinner("Searching..."):
+                    start = time.perf_counter()
+                    query_embedding = encode_query_live(query_clean)
+                    results = get_searcher(str(image_file)).search(query_embedding, k=k_int)
+                    elapsed_ms = int((time.perf_counter() - start) * 1000)
 
-            if k_int is not None:
-                k_int = max(1, min(20, k_int))
-                try:
-                    with st.spinner("Searching..."):
-                        start = time.perf_counter()
-                        query_embedding = encode_query_live(query_clean)
-                        results = get_searcher(str(image_file)).search(query_embedding, k=k_int)
-                        elapsed_ms = int((time.perf_counter() - start) * 1000)
-
-                    st.session_state["last_results"] = results
-                    st.session_state["last_elapsed_ms"] = elapsed_ms
-                    st.session_state["last_query"] = query_clean
-                    st.session_state["last_k"] = k_int
-                    st.session_state["k_input_text"] = str(k_int)
-                    status_text = f'Query: "{query_clean}" · {len(results)} results · {elapsed_ms} ms'
-                except Exception as e:
-                    status_text = "Search failed. Please retry."
-                    st.error(f"Runtime error: {e}")
+                st.session_state["last_results"] = results
+                st.session_state["last_elapsed_ms"] = elapsed_ms
+                st.session_state["last_query"] = query_clean
+                st.session_state["last_k"] = k_int
+                st.session_state["k_input"] = k_int
+                status_text = f'Query: "{query_clean}" · {len(results)} results · {elapsed_ms} ms'
+            except Exception as e:
+                status_text = "Search failed. Please retry."
+                st.error(f"Runtime error: {e}")
 
     status_placeholder.markdown(f"<div class='status'>{html.escape(status_text)}</div>", unsafe_allow_html=True)
 
