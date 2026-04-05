@@ -510,7 +510,6 @@ def main():
                 st.session_state["last_elapsed_ms"] = elapsed_ms
                 st.session_state["last_query"] = query_clean
                 st.session_state["last_k"] = k_int
-                st.session_state["k_input"] = k_int
                 status_text = f'Query: "{query_clean}" · {len(results)} results · {elapsed_ms} ms'
             except Exception as e:
                 status_text = "Search failed. Please retry."
