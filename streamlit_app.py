@@ -129,21 +129,23 @@ def main():
         [data-testid="stToolbar"],
         [data-testid="stDecoration"],
         [data-testid="stStatusWidget"],
-        [data-testid="InputInstructions"],
         #MainMenu,
         footer {
           visibility: hidden;
           height: 0;
           position: fixed;
         }
+        div[data-testid="InputInstructions"] {
+          display: none !important;
+        }
         .block-container {
-          width: min(980px, 94vw);
+          width: min(1220px, 96vw);
           margin: 0 auto;
-          padding-top: 18px;
-          padding-bottom: 44px;
+          padding-top: 24px;
+          padding-bottom: 64px;
         }
         .hero {
-          min-height: 28vh;
+          min-height: 34vh;
           display: grid;
           place-items: center;
           text-align: center;
@@ -152,111 +154,122 @@ def main():
           margin: 0;
           color: #202124;
           font-family: "Arial", "Helvetica", sans-serif;
-          font-size: clamp(58px, 8vw, 92px);
-          font-weight: 600;
-          letter-spacing: -1.5px;
+          font-size: clamp(74px, 9vw, 120px);
+          font-weight: 700;
+          letter-spacing: -1.8px;
           line-height: 1;
         }
         .logo-accent { color: #1a73e8; }
         .subtitle {
-          margin: 10px auto 14px;
+          margin: 14px auto 22px;
           max-width: 760px;
           color: var(--muted);
-          font-size: 14px;
-          line-height: 1.5;
+          font-size: 34px;
+          line-height: 1.45;
         }
 
-        div[data-testid="stTextInput"] [data-baseweb="base-input"] {
+        div[data-testid="stTextInput"] {
+          margin-bottom: 8px !important;
+        }
+        div[data-testid="stTextInputRootElement"] {
           background: #fff !important;
           border: 1px solid var(--line) !important;
           border-radius: 999px !important;
-          box-shadow: 0 1px 6px rgba(32,33,36,.18) !important;
-          min-height: 50px;
+          box-shadow: 0 4px 16px rgba(60,64,67,.14) !important;
+          min-height: 72px !important;
+          padding: 2px 12px !important;
+          transition: box-shadow 0.2s ease !important;
         }
-        div[data-testid="stTextInput"] [data-baseweb="input"] {
-          background: #fff !important;
-          border: 1px solid var(--line) !important;
-          border-radius: 999px !important;
-          transition: box-shadow 0.18s ease !important;
+        div[data-testid="stTextInputRootElement"]:focus-within {
+          box-shadow: 0 8px 22px rgba(60,64,67,.2) !important;
         }
-        div[data-testid="stTextInput"] [data-baseweb="input"] > div {
-          background: #fff !important;
-          border-radius: 999px !important;
+        div[data-testid="stTextInputRootElement"] > div,
+        div[data-testid="stTextInputRootElement"] [data-baseweb="base-input"],
+        div[data-testid="stTextInputRootElement"] [data-baseweb="input"] {
+          background: transparent !important;
+          border: 0 !important;
+          box-shadow: none !important;
+          min-height: 0 !important;
+          padding: 0 !important;
         }
-        div[data-testid="stTextInput"] [data-baseweb="input"]:focus-within {
-          box-shadow: 0 2px 12px rgba(32,33,36,.22) !important;
-          border-color: var(--line) !important;
-        }
-        div[data-testid="stTextInput"] input {
+        div[data-testid="stTextInputRootElement"] input {
           background: transparent !important;
           color: var(--ink) !important;
-          font-size: 18px !important;
-          padding-left: 20px !important;
-          padding-right: 20px !important;
+          font-size: 38px !important;
+          font-weight: 500 !important;
+          padding-left: 26px !important;
+          padding-right: 26px !important;
+          line-height: 1.2 !important;
         }
-        div[data-testid="stTextInput"] input::placeholder {
+        div[data-testid="stTextInputRootElement"] input::placeholder {
           color: #80868b !important;
           opacity: 1 !important;
+          font-size: 38px !important;
         }
         div[data-testid="stButton"] {
           text-align: center;
+          margin-top: 12px;
         }
         div[data-testid="stButton"] button {
-          border: 1px solid #dadce0 !important;
-          border-radius: 6px !important;
-          background: #f8f9fa !important;
-          color: #3c4043 !important;
-          font-size: 14px !important;
-          font-weight: 500 !important;
-          height: 36px !important;
-          min-width: 148px !important;
-          padding: 0 22px !important;
-          margin-top: 10px !important;
+          border: 0 !important;
+          border-radius: 999px !important;
+          background: linear-gradient(135deg, #3f83f8 0%, #2463eb 100%) !important;
+          color: #ffffff !important;
+          font-size: 32px !important;
+          font-weight: 700 !important;
+          height: 72px !important;
+          min-width: 300px !important;
+          padding: 0 36px !important;
+          margin-top: 0 !important;
           white-space: nowrap !important;
           display: inline-flex !important;
           align-items: center !important;
           justify-content: center !important;
+          letter-spacing: 0.2px !important;
+          box-shadow: 0 8px 18px rgba(36,99,235,.28) !important;
+          transition: transform 0.14s ease, box-shadow 0.14s ease !important;
         }
         div[data-testid="stButton"] button:hover {
-          box-shadow: 0 1px 2px rgba(60,64,67,.2) !important;
-          border-color: #c6c6c6 !important;
-          color: #202124 !important;
+          box-shadow: 0 12px 22px rgba(36,99,235,.34) !important;
+          transform: translateY(-1px) !important;
         }
         div[data-testid="stButton"] button:active {
-          transform: translateY(1px);
+          transform: translateY(0);
+          box-shadow: 0 6px 14px rgba(36,99,235,.26) !important;
         }
         .helper {
           text-align: center;
-          margin: 10px auto 0;
+          margin: 20px auto 0;
           color: var(--muted);
-          font-size: 12px;
-          max-width: 760px;
+          font-size: 33px;
+          max-width: 980px;
+          line-height: 1.45;
         }
         .status {
           text-align: center;
-          margin: 10px auto 24px;
+          margin: 14px auto 34px;
           color: var(--muted);
-          font-size: 12px;
-          min-height: 18px;
+          font-size: 30px;
+          min-height: 32px;
         }
         .results-head {
           display: flex;
           align-items: baseline;
           justify-content: space-between;
-          margin: 8px 2px 10px;
+          margin: 16px 2px 16px;
           gap: 10px;
           flex-wrap: wrap;
         }
         .results-title {
           margin: 0;
           color: #202124;
-          font-size: 24px;
+          font-size: 64px;
           font-weight: 650;
         }
         .results-note {
           margin: 0;
           color: var(--muted);
-          font-size: 12px;
+          font-size: 32px;
         }
         .results {
           display: grid;
@@ -295,6 +308,25 @@ def main():
           text-overflow: ellipsis;
         }
         .empty { color: var(--muted); margin-top: 6px; }
+        @media (max-width: 900px) {
+          .hero { min-height: 26vh; }
+          .logo { font-size: clamp(58px, 13vw, 82px); }
+          .subtitle { font-size: 23px; }
+          div[data-testid="stTextInputRootElement"] { min-height: 60px !important; }
+          div[data-testid="stTextInputRootElement"] input,
+          div[data-testid="stTextInputRootElement"] input::placeholder {
+            font-size: 24px !important;
+          }
+          div[data-testid="stButton"] button {
+            min-width: 220px !important;
+            height: 58px !important;
+            font-size: 26px !important;
+          }
+          .helper { font-size: 20px; }
+          .status { font-size: 18px; min-height: 24px; }
+          .results-title { font-size: 44px; }
+          .results-note { font-size: 21px; }
+        }
         </style>
         """,
         unsafe_allow_html=True,
@@ -324,14 +356,14 @@ def main():
         st.error("Embedding file not found. Expected demo_data/image_embeddings_demo.jsonl or data/image_embeddings.jsonl")
         st.stop()
 
-    outer_l, outer_c, outer_r = st.columns([1.2, 6, 1.2])  # 中间列控制搜索框宽度
+    outer_l, outer_c, outer_r = st.columns([0.8, 7.4, 0.8])  # 中间列控制搜索框宽度
     with outer_c:
         query = st.text_input(
-            "query_hidden",
+            "searchbox_hidden",
             value=st.session_state.get("last_query", ""),
             placeholder="Search images...",
             label_visibility="collapsed",
-            autocomplete="new-password",  # 关闭浏览器自动补全，避免浮层重叠
+            autocomplete="off",  # 关闭浏览器自动补全，避免浮层重叠
         )
         c1, c2, c3 = st.columns([3, 2, 3])
         with c2:
