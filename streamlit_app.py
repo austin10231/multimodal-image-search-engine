@@ -231,8 +231,7 @@ def main():
           margin: 0 0 6px 2px;
           font-weight: 600;
         }
-        div[data-testid="stForm"] div[data-testid="stTextInput"],
-        div[data-testid="stForm"] div[data-testid="stNumberInput"] {
+        div[data-testid="stForm"] div[data-testid="stTextInput"] {
           margin-bottom: 0 !important;
         }
         div[data-testid="stForm"] div[data-testid="stTextInputRootElement"] {
@@ -268,23 +267,6 @@ def main():
         div[data-testid="stForm"] div[data-testid="stTextInputRootElement"] input::placeholder {
           color: #8693a5 !important;
           opacity: 1 !important;
-        }
-        div[data-testid="stForm"] div[data-testid="stNumberInput"] [data-baseweb="input"] {
-          border: 1px solid var(--line) !important;
-          border-radius: 999px !important;
-          min-height: 50px !important;
-          transition: border-color 0.18s ease, box-shadow 0.18s ease !important;
-          box-shadow: none !important;
-          background: #fff !important;
-        }
-        div[data-testid="stForm"] div[data-testid="stNumberInput"] [data-baseweb="input"]:focus-within {
-          border-color: var(--brand) !important;
-          box-shadow: 0 0 0 4px var(--brand-soft) !important;
-        }
-        div[data-testid="stForm"] div[data-testid="stNumberInput"] input {
-          color: var(--ink) !important;
-          font-size: 16px !important;
-          font-weight: 600 !important;
         }
         div[data-testid="stForm"] div[data-testid="stFormSubmitButton"] {
           margin-top: 0 !important;
@@ -415,8 +397,8 @@ def main():
         st.session_state["last_k"] = 8
     if "query_input" not in st.session_state:
         st.session_state["query_input"] = st.session_state.get("last_query", "")
-    if "k_input" not in st.session_state:
-        st.session_state["k_input"] = int(st.session_state.get("last_k", 8))
+    if "k_input_text" not in st.session_state:
+        st.session_state["k_input_text"] = str(st.session_state.get("last_k", 8))
 
     image_file = ACTIVE_EMBEDDINGS_FILE
     active_images_dir = ACTIVE_IMAGES_DIR
@@ -447,13 +429,12 @@ def main():
                 )
             with k_col:
                 st.markdown("<label class='label'>Top-K (how many results)</label>", unsafe_allow_html=True)
-                k_value = st.number_input(
+                k_raw = st.text_input(
                     "top_k",
-                    min_value=1,
-                    max_value=20,
-                    step=1,
-                    key="k_input",
+                    key="k_input_text",
+                    placeholder="8",
                     label_visibility="collapsed",
+                    autocomplete="off",
                 )
             with action_col:
                 st.markdown("<label class='label'>Action</label>", unsafe_allow_html=True)
@@ -467,30 +448,34 @@ def main():
 
     if submitted:
         query_clean = str(query).strip()
-        try:
-            k_int = int(k_value)
-        except (TypeError, ValueError):
-            k_int = 8
-        k_int = max(1, min(20, k_int))
         if query_clean == "":
             status_text = "Query cannot be empty."
         else:
+            k_clean = str(k_raw).strip()
             try:
-                with st.spinner("Searching..."):
-                    start = time.perf_counter()
-                    query_embedding = encode_query_live(query_clean)
-                    results = get_searcher(str(image_file)).search(query_embedding, k=k_int)
-                    elapsed_ms = int((time.perf_counter() - start) * 1000)
+                k_int = int(k_clean) if k_clean else 8
+            except (TypeError, ValueError):
+                status_text = "k must be an integer."
+                k_int = None
 
-                st.session_state["last_results"] = results
-                st.session_state["last_elapsed_ms"] = elapsed_ms
-                st.session_state["last_query"] = query_clean
-                st.session_state["last_k"] = k_int
-                st.session_state["k_input"] = k_int
-                status_text = f'Query: "{query_clean}" · {len(results)} results · {elapsed_ms} ms'
-            except Exception as e:
-                status_text = "Search failed. Please retry."
-                st.error(f"Runtime error: {e}")
+            if k_int is not None:
+                k_int = max(1, min(20, k_int))
+                try:
+                    with st.spinner("Searching..."):
+                        start = time.perf_counter()
+                        query_embedding = encode_query_live(query_clean)
+                        results = get_searcher(str(image_file)).search(query_embedding, k=k_int)
+                        elapsed_ms = int((time.perf_counter() - start) * 1000)
+
+                    st.session_state["last_results"] = results
+                    st.session_state["last_elapsed_ms"] = elapsed_ms
+                    st.session_state["last_query"] = query_clean
+                    st.session_state["last_k"] = k_int
+                    st.session_state["k_input_text"] = str(k_int)
+                    status_text = f'Query: "{query_clean}" · {len(results)} results · {elapsed_ms} ms'
+                except Exception as e:
+                    status_text = "Search failed. Please retry."
+                    st.error(f"Runtime error: {e}")
 
     status_placeholder.markdown(f"<div class='status'>{html.escape(status_text)}</div>", unsafe_allow_html=True)
 
