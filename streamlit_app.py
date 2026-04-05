@@ -189,7 +189,7 @@ def main():
           right: 8%;
         }
         .center {
-          width: min(940px, 100%);
+          width: min(980px, 100%);
           text-align: center;
           z-index: 1;
           position: relative;
@@ -198,7 +198,7 @@ def main():
           margin: 0;
           color: var(--ink);
           font-family: "Baskerville", "Times New Roman", "Georgia", serif;
-          font-size: clamp(62px, 8.6vw, 104px);
+          font-size: clamp(66px, 9vw, 112px);
           font-weight: 700;
           letter-spacing: 0.6px;
           line-height: 1.02;
@@ -216,10 +216,10 @@ def main():
         div[data-testid="stForm"] {
           background: #fff;
           border: 1px solid #dbe3ee;
-          border-radius: 26px;
+          border-radius: 28px;
           box-shadow: var(--shadow);
-          padding: 20px;
-          max-width: 940px;
+          padding: 24px;
+          max-width: 980px;
           margin: 0 auto;
         }
         div[data-testid="stForm"] > div {
@@ -280,6 +280,9 @@ def main():
           box-shadow: none !important;
           transition: border-color 0.18s ease, box-shadow 0.18s ease !important;
         }
+        div[data-testid="stForm"] div[data-testid="stNumberInput"] [data-baseweb="input"] > div {
+          background: transparent !important;
+        }
         div[data-testid="stForm"] div[data-testid="stNumberInput"] [data-baseweb="input"]:focus-within {
           border-color: var(--brand) !important;
           box-shadow: 0 0 0 4px var(--brand-soft) !important;
@@ -290,13 +293,22 @@ def main():
           font-weight: 600 !important;
         }
         div[data-testid="stForm"] div[data-testid="stNumberInput"] button {
-          background: #fff !important;
+          background: #ffffff !important;
+          background-color: #ffffff !important;
           color: #4c5f78 !important;
+          border-radius: 8px !important;
           border: 0 !important;
           box-shadow: none !important;
         }
+        div[data-testid="stForm"] div[data-testid="stNumberInput"] button svg,
+        div[data-testid="stForm"] div[data-testid="stNumberInput"] button svg path {
+          fill: #4c5f78 !important;
+          stroke: #4c5f78 !important;
+          color: #4c5f78 !important;
+        }
         div[data-testid="stForm"] div[data-testid="stNumberInput"] button:hover {
           background: #eef2f8 !important;
+          background-color: #eef2f8 !important;
           color: var(--ink) !important;
         }
         div[data-testid="stForm"] div[data-testid="stFormSubmitButton"] {
@@ -392,7 +404,7 @@ def main():
         }
         @media (max-width: 860px) {
           .hero { min-height: 18vh; }
-          .logo { font-size: clamp(44px, 11vw, 74px); }
+          .logo { font-size: clamp(46px, 11vw, 80px); }
           .subtitle {
             font-size: 14px;
             white-space: normal;
