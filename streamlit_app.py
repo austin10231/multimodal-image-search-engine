@@ -145,7 +145,7 @@ def main():
           padding-bottom: 64px;
         }
         .hero {
-          min-height: 34vh;
+          min-height: 31vh;
           display: grid;
           place-items: center;
           text-align: center;
@@ -154,17 +154,17 @@ def main():
           margin: 0;
           color: #202124;
           font-family: "Arial", "Helvetica", sans-serif;
-          font-size: clamp(74px, 9vw, 120px);
+          font-size: clamp(70px, 7.8vw, 102px);
           font-weight: 700;
           letter-spacing: -1.8px;
           line-height: 1;
         }
         .logo-accent { color: #1a73e8; }
         .subtitle {
-          margin: 14px auto 22px;
+          margin: 12px auto 18px;
           max-width: 760px;
           color: var(--muted);
-          font-size: 34px;
+          font-size: 15px;
           line-height: 1.45;
         }
 
@@ -176,12 +176,14 @@ def main():
           border: 1px solid var(--line) !important;
           border-radius: 999px !important;
           box-shadow: 0 4px 16px rgba(60,64,67,.14) !important;
-          min-height: 72px !important;
+          min-height: 66px !important;
           padding: 2px 12px !important;
-          transition: box-shadow 0.2s ease !important;
+          transition: box-shadow 0.18s ease, border-color 0.18s ease, transform 0.18s ease !important;
         }
         div[data-testid="stTextInputRootElement"]:focus-within {
-          box-shadow: 0 8px 22px rgba(60,64,67,.2) !important;
+          border-color: #1a73e8 !important;
+          box-shadow: 0 0 0 4px rgba(26,115,232,.14), 0 10px 22px rgba(60,64,67,.18) !important;
+          transform: translateY(-1px) !important;
         }
         div[data-testid="stTextInputRootElement"] > div,
         div[data-testid="stTextInputRootElement"] [data-baseweb="base-input"],
@@ -195,62 +197,66 @@ def main():
         div[data-testid="stTextInputRootElement"] input {
           background: transparent !important;
           color: var(--ink) !important;
-          font-size: 38px !important;
-          font-weight: 500 !important;
-          padding-left: 26px !important;
-          padding-right: 26px !important;
+          font-size: 20px !important;
+          font-weight: 450 !important;
+          padding-left: 22px !important;
+          padding-right: 22px !important;
           line-height: 1.2 !important;
+          caret-color: #1a73e8 !important;
         }
         div[data-testid="stTextInputRootElement"] input::placeholder {
           color: #80868b !important;
           opacity: 1 !important;
-          font-size: 38px !important;
+          font-size: 20px !important;
+        }
+        div[data-testid="stTextInputRootElement"] input:focus::placeholder {
+          color: #9aa0a6 !important;
         }
         div[data-testid="stButton"] {
           text-align: center;
-          margin-top: 12px;
+          margin-top: 10px;
         }
         div[data-testid="stButton"] button {
           border: 0 !important;
           border-radius: 999px !important;
           background: linear-gradient(135deg, #3f83f8 0%, #2463eb 100%) !important;
           color: #ffffff !important;
-          font-size: 32px !important;
-          font-weight: 700 !important;
-          height: 72px !important;
-          min-width: 300px !important;
-          padding: 0 36px !important;
+          font-size: 20px !important;
+          font-weight: 650 !important;
+          height: 54px !important;
+          min-width: 220px !important;
+          padding: 0 30px !important;
           margin-top: 0 !important;
           white-space: nowrap !important;
           display: inline-flex !important;
           align-items: center !important;
           justify-content: center !important;
           letter-spacing: 0.2px !important;
-          box-shadow: 0 8px 18px rgba(36,99,235,.28) !important;
+          box-shadow: 0 6px 14px rgba(36,99,235,.24) !important;
           transition: transform 0.14s ease, box-shadow 0.14s ease !important;
         }
         div[data-testid="stButton"] button:hover {
-          box-shadow: 0 12px 22px rgba(36,99,235,.34) !important;
+          box-shadow: 0 10px 18px rgba(36,99,235,.3) !important;
           transform: translateY(-1px) !important;
         }
         div[data-testid="stButton"] button:active {
           transform: translateY(0);
-          box-shadow: 0 6px 14px rgba(36,99,235,.26) !important;
+          box-shadow: 0 4px 10px rgba(36,99,235,.22) !important;
         }
         .helper {
           text-align: center;
-          margin: 20px auto 0;
+          margin: 18px auto 0;
           color: var(--muted);
-          font-size: 33px;
+          font-size: 14px;
           max-width: 980px;
           line-height: 1.45;
         }
         .status {
           text-align: center;
-          margin: 14px auto 34px;
+          margin: 12px auto 30px;
           color: var(--muted);
-          font-size: 30px;
-          min-height: 32px;
+          font-size: 14px;
+          min-height: 20px;
         }
         .results-head {
           display: flex;
@@ -263,13 +269,13 @@ def main():
         .results-title {
           margin: 0;
           color: #202124;
-          font-size: 64px;
+          font-size: 26px;
           font-weight: 650;
         }
         .results-note {
           margin: 0;
           color: var(--muted);
-          font-size: 32px;
+          font-size: 13px;
         }
         .results {
           display: grid;
@@ -311,21 +317,21 @@ def main():
         @media (max-width: 900px) {
           .hero { min-height: 26vh; }
           .logo { font-size: clamp(58px, 13vw, 82px); }
-          .subtitle { font-size: 23px; }
+          .subtitle { font-size: 15px; }
           div[data-testid="stTextInputRootElement"] { min-height: 60px !important; }
           div[data-testid="stTextInputRootElement"] input,
           div[data-testid="stTextInputRootElement"] input::placeholder {
-            font-size: 24px !important;
+            font-size: 18px !important;
           }
           div[data-testid="stButton"] button {
-            min-width: 220px !important;
-            height: 58px !important;
-            font-size: 26px !important;
+            min-width: 170px !important;
+            height: 48px !important;
+            font-size: 17px !important;
           }
-          .helper { font-size: 20px; }
-          .status { font-size: 18px; min-height: 24px; }
-          .results-title { font-size: 44px; }
-          .results-note { font-size: 21px; }
+          .helper { font-size: 13px; }
+          .status { font-size: 13px; min-height: 22px; }
+          .results-title { font-size: 24px; }
+          .results-note { font-size: 12px; }
         }
         </style>
         """,
