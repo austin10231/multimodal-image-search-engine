@@ -155,16 +155,16 @@ def main():
         .block-container {
           width: min(1120px, 94vw);
           margin: 0 auto;
-          padding-top: 36px;
+          padding-top: 24px;
           padding-bottom: 56px;
         }
         .hero {
-          min-height: 45vh;
+          min-height: 22vh;
           display: grid;
           place-items: center;
           position: relative;
           text-align: center;
-          margin-bottom: 22px;
+          margin-bottom: 10px;
         }
         .orb {
           position: absolute;
@@ -197,15 +197,15 @@ def main():
         .logo {
           margin: 0;
           color: var(--ink);
-          font-family: "Baskerville", "Book Antiqua", serif;
-          font-size: clamp(44px, 7vw, 70px);
+          font-family: "Baskerville", "Times New Roman", "Georgia", serif;
+          font-size: clamp(58px, 8.2vw, 96px);
           font-weight: 700;
           letter-spacing: 0.6px;
           line-height: 1.02;
         }
         .logo-accent { color: var(--brand); }
         .subtitle {
-          margin: 10px auto 22px;
+          margin: 10px auto 14px;
           max-width: 680px;
           color: var(--muted);
           font-size: 15px;
@@ -359,8 +359,8 @@ def main():
           margin-top: 6px;
         }
         @media (max-width: 860px) {
-          .hero { min-height: 40vh; }
-          .logo { font-size: clamp(40px, 11vw, 62px); }
+          .hero { min-height: 18vh; }
+          .logo { font-size: clamp(44px, 11vw, 74px); }
           .subtitle { font-size: 14px; }
           div[data-testid="stForm"] {
             border-radius: 20px;
