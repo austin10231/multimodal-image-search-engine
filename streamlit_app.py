@@ -23,16 +23,22 @@ from src.text_embedding import (  # 导入文本编码函数
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent  # 项目根目录
+DATA_DIR = PROJECT_ROOT / "data"  # 全量数据目录
+IMAGES_DIR = DATA_DIR / "Images"  # 全量图片目录
 DEMO_IMAGE_FILE = PROJECT_ROOT / "demo_data" / "image_embeddings_demo.jsonl"  # Demo 向量路径
 FULL_IMAGE_FILE = PROJECT_ROOT / "data" / "image_embeddings.jsonl"  # 全量向量路径
+DEMO_IMAGES_DIR = PROJECT_ROOT / "demo_data" / "images"  # Demo 图片目录
 
 
-def choose_embeddings_file() -> Path | None:  # 自动选择可用向量文件
-    if DEMO_IMAGE_FILE.exists():  # 云端优先使用 demo，内存更友好
-        return DEMO_IMAGE_FILE
-    if FULL_IMAGE_FILE.exists():  # 本地有全量数据时可回退
-        return FULL_IMAGE_FILE
-    return None
+def choose_runtime_assets() -> tuple[Path | None, Path | None, str]:  # 与本地 Flask 版保持一致的数据选择逻辑
+    if FULL_IMAGE_FILE.exists() and IMAGES_DIR.exists():  # full 模式：要求向量与图片目录都存在
+        return FULL_IMAGE_FILE, IMAGES_DIR, "full"
+    if DEMO_IMAGE_FILE.exists() and DEMO_IMAGES_DIR.exists():  # demo 模式：同样要求向量与图片目录都存在
+        return DEMO_IMAGE_FILE, DEMO_IMAGES_DIR, "demo"
+    return None, None, "missing"  # 都不存在时标记为 missing
+
+
+ACTIVE_EMBEDDINGS_FILE, ACTIVE_IMAGES_DIR, DATA_MODE = choose_runtime_assets()  # 与本地版一致：提前确定当前运行模式
 
 
 @st.cache_resource(show_spinner=False)  # 缓存文本模型，避免重复加载
@@ -54,20 +60,25 @@ def encode_query_live(query: str) -> list[float]:  # 把查询文本编码为向
     return postprocess_text_embedding(text_features)
 
 
-def resolve_image_path(image_path: str) -> Path:  # 解析图片路径
+def resolve_image_path(image_path: str, active_images_dir: Path | None = None) -> Path:  # 解析图片路径
     p = Path(image_path)
     if p.is_absolute() and p.exists():
         return p
     p2 = PROJECT_ROOT / image_path
     if p2.exists():
         return p2
+    if active_images_dir is not None:  # 对齐本地版逻辑：可用图片目录下按文件名兜底
+        p3 = active_images_dir / p.name
+        if p3.exists():
+            return p3
     return p
 
 
 @st.cache_data(show_spinner=False)  # 缓存图片编码结果，减少重复读盘
 
-def image_to_data_uri(path_str: str) -> str | None:
-    img_path = resolve_image_path(path_str)
+def image_to_data_uri(path_str: str, active_images_dir_str: str | None = None) -> str | None:
+    active_images_dir = Path(active_images_dir_str) if active_images_dir_str else None
+    img_path = resolve_image_path(path_str, active_images_dir=active_images_dir)
     if not img_path.exists():
         return None
 
@@ -85,7 +96,7 @@ def image_to_data_uri(path_str: str) -> str | None:
     return f"data:{mime};base64,{data}"
 
 
-def render_results_html(results: list[dict]) -> str:  # 渲染结果卡片 HTML
+def render_results_html(results: list[dict], active_images_dir: Path | None = None) -> str:  # 渲染结果卡片 HTML
     if not results:
         return "<p class='empty'>No results.</p>"
 
@@ -93,7 +104,7 @@ def render_results_html(results: list[dict]) -> str:  # 渲染结果卡片 HTML
     for item in results:
         image_id = html.escape(str(item.get("image_id", "")))
         score = float(item.get("score", 0.0))
-        image_uri = image_to_data_uri(str(item.get("image_path", "")))
+        image_uri = image_to_data_uri(str(item.get("image_path", "")), str(active_images_dir) if active_images_dir else None)
 
         if image_uri is None:
             thumb_html = '<div class="thumb thumb-missing">Image not found</div>'
@@ -144,29 +155,58 @@ def main():
         .block-container {
           width: min(1120px, 94vw);
           margin: 0 auto;
-          padding-top: 34px;
+          padding-top: 36px;
           padding-bottom: 56px;
         }
         .hero {
-          min-height: 36vh;
+          min-height: 45vh;
           display: grid;
           place-items: center;
+          position: relative;
           text-align: center;
-          margin-bottom: 16px;
+          margin-bottom: 22px;
+        }
+        .orb {
+          position: absolute;
+          border-radius: 999px;
+          filter: blur(8px);
+          opacity: 0.28;
+          pointer-events: none;
+          z-index: 0;
+        }
+        .orb-a {
+          width: 280px;
+          height: 280px;
+          background: #d9e6ff;
+          top: -40px;
+          left: 4%;
+        }
+        .orb-b {
+          width: 220px;
+          height: 220px;
+          background: #ffe6d3;
+          bottom: -10px;
+          right: 8%;
+        }
+        .center {
+          width: min(860px, 100%);
+          text-align: center;
+          z-index: 1;
+          position: relative;
         }
         .logo {
           margin: 0;
           color: var(--ink);
           font-family: "Baskerville", "Book Antiqua", serif;
-          font-size: clamp(62px, 8.2vw, 92px);
+          font-size: clamp(44px, 7vw, 70px);
           font-weight: 700;
-          letter-spacing: 0.4px;
+          letter-spacing: 0.6px;
           line-height: 1.02;
         }
         .logo-accent { color: var(--brand); }
         .subtitle {
-          margin: 10px auto 20px;
-          max-width: 700px;
+          margin: 10px auto 22px;
+          max-width: 680px;
           color: var(--muted);
           font-size: 15px;
           line-height: 1.6;
@@ -177,6 +217,8 @@ def main():
           border-radius: 26px;
           box-shadow: var(--shadow);
           padding: 16px;
+          max-width: 860px;
+          margin: 0 auto;
         }
         div[data-testid="stForm"] > div {
           border: 0;
@@ -336,8 +378,8 @@ def main():
           margin-top: 6px;
         }
         @media (max-width: 900px) {
-          .hero { min-height: 32vh; }
-          .logo { font-size: clamp(54px, 13vw, 76px); }
+          .hero { min-height: 40vh; }
+          .logo { font-size: clamp(40px, 11vw, 62px); }
           .subtitle { font-size: 14px; }
           div[data-testid="stForm"] {
             border-radius: 20px;
@@ -352,7 +394,9 @@ def main():
     st.markdown(
         """
         <section class="hero">
-          <div>
+          <div class="orb orb-a"></div>
+          <div class="orb orb-b"></div>
+          <div class="center">
             <h1 class="logo">Lens<span class="logo-accent">Seek</span></h1>
             <p class="subtitle">Search images with natural language. Type what you want to see, and the engine returns semantically similar photos.</p>
           </div>
@@ -372,11 +416,12 @@ def main():
     if "query_input" not in st.session_state:
         st.session_state["query_input"] = st.session_state.get("last_query", "")
     if "k_input" not in st.session_state:
-        st.session_state["k_input"] = 8
+        st.session_state["k_input"] = int(st.session_state.get("last_k", 8))
 
-    image_file = choose_embeddings_file()
+    image_file = ACTIVE_EMBEDDINGS_FILE
+    active_images_dir = ACTIVE_IMAGES_DIR
     if image_file is None:
-        st.error("Embedding file not found. Expected demo_data/image_embeddings_demo.jsonl or data/image_embeddings.jsonl")
+        st.error("Embedding file not found. Expected full data or demo data assets.")
         st.stop()
 
     status_text = "Ready. Enter a query and click Search."
@@ -387,10 +432,10 @@ def main():
             f'{st.session_state.get("last_elapsed_ms", 0)} ms'
         )
 
-    outer_l, outer_c, outer_r = st.columns([0.6, 10.8, 0.6])  # 中间列控制整体搜索区宽度
+    outer_l, outer_c, outer_r = st.columns([0.3, 11.4, 0.3])  # 中间列控制整体搜索区宽度
     with outer_c:
         with st.form("search_form", clear_on_submit=False):
-            query_col, k_col, action_col = st.columns([1.0, 0.34, 0.22], gap="small")
+            query_col, k_col, action_col = st.columns([1.0, 0.30, 0.22], gap="small")
             with query_col:
                 st.markdown("<label class='label'>Search Query (describe the image you want)</label>", unsafe_allow_html=True)
                 query = st.text_input(
@@ -422,7 +467,11 @@ def main():
 
     if submitted:
         query_clean = str(query).strip()
-        k_int = int(k_value)
+        try:
+            k_int = int(k_value)
+        except (TypeError, ValueError):
+            k_int = 8
+        k_int = max(1, min(20, k_int))
         if query_clean == "":
             status_text = "Query cannot be empty."
         else:
@@ -437,6 +486,7 @@ def main():
                 st.session_state["last_elapsed_ms"] = elapsed_ms
                 st.session_state["last_query"] = query_clean
                 st.session_state["last_k"] = k_int
+                st.session_state["k_input"] = k_int
                 status_text = f'Query: "{query_clean}" · {len(results)} results · {elapsed_ms} ms'
             except Exception as e:
                 status_text = "Search failed. Please retry."
@@ -450,7 +500,7 @@ def main():
     )
 
     results = st.session_state.get("last_results", [])
-    st.markdown(render_results_html(results), unsafe_allow_html=True)
+    st.markdown(render_results_html(results, active_images_dir=active_images_dir), unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
