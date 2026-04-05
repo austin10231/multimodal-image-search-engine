@@ -11,6 +11,12 @@ streamlit run streamlit_app.py
 ```
 Open: `http://localhost:8501`
 
+## Evaluation (Recall@K)
+```bash
+python -m src.evaluate --captions-file data/captions.txt --k-values 1,5,10 --search-k 10
+```
+Metrics will be saved to `data/eval_metrics.json`.
+
 ## Streamlit Cloud Deploy
 1. Push latest code to GitHub.
 2. In Streamlit Community Cloud, click **New app**.
