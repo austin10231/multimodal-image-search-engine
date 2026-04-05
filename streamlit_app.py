@@ -114,16 +114,19 @@ def main():
         """
         <style>
         :root {
-          --bg: #ffffff;
-          --ink: #202124;
-          --muted: #5f6368;
-          --line: #dfe1e5;
-          --brand: #1a73e8;
+          --bg: #f6f8fb;
+          --ink: #1f2a37;
+          --muted: #6a7789;
+          --line: #d5dde8;
+          --brand: #3165f6;
+          --brand-soft: #e8efff;
           --card: #ffffff;
+          --shadow: 0 10px 30px rgba(23, 38, 74, 0.08);
         }
         .stApp {
           background: var(--bg);
           color: var(--ink);
+          font-family: "Avenir Next", "Trebuchet MS", sans-serif;
         }
         [data-testid="stHeader"],
         [data-testid="stToolbar"],
@@ -139,167 +142,179 @@ def main():
           display: none !important;
         }
         .block-container {
-          width: min(1220px, 96vw);
+          width: min(1120px, 94vw);
           margin: 0 auto;
-          padding-top: 24px;
-          padding-bottom: 64px;
+          padding-top: 34px;
+          padding-bottom: 56px;
         }
         .hero {
-          min-height: 24vh;
+          min-height: 36vh;
           display: grid;
           place-items: center;
           text-align: center;
+          margin-bottom: 16px;
         }
         .logo {
           margin: 0;
-          color: #202124;
-          font-family: "Arial", "Helvetica", sans-serif;
-          font-size: clamp(76px, 8.4vw, 110px);
+          color: var(--ink);
+          font-family: "Baskerville", "Book Antiqua", serif;
+          font-size: clamp(62px, 8.2vw, 92px);
           font-weight: 700;
-          letter-spacing: -1.8px;
-          line-height: 1;
+          letter-spacing: 0.4px;
+          line-height: 1.02;
         }
-        .logo-accent { color: #1a73e8; }
+        .logo-accent { color: var(--brand); }
         .subtitle {
-          margin: 12px auto 18px;
-          max-width: 760px;
+          margin: 10px auto 20px;
+          max-width: 700px;
           color: var(--muted);
           font-size: 15px;
-          line-height: 1.45;
+          line-height: 1.6;
         }
-
-        div[data-testid="stTextInput"] {
-          margin-bottom: 8px !important;
+        div[data-testid="stForm"] {
+          background: #fff;
+          border: 1px solid #dbe3ee;
+          border-radius: 26px;
+          box-shadow: var(--shadow);
+          padding: 16px;
         }
-        div[data-testid="stTextInputRootElement"] {
+        div[data-testid="stForm"] > div {
+          border: 0;
+        }
+        .label {
+          display: block;
+          font-size: 12px;
+          letter-spacing: 0.03em;
+          color: var(--muted);
+          margin: 0 0 6px 2px;
+          font-weight: 600;
+        }
+        div[data-testid="stForm"] div[data-testid="stTextInput"],
+        div[data-testid="stForm"] div[data-testid="stNumberInput"] {
+          margin-bottom: 0 !important;
+        }
+        div[data-testid="stForm"] div[data-testid="stTextInputRootElement"] {
           background: #fff !important;
           border: 1px solid var(--line) !important;
           border-radius: 999px !important;
-          box-shadow: 0 4px 16px rgba(60,64,67,.14) !important;
-          min-height: 66px !important;
-          padding: 2px 12px !important;
-          transition: box-shadow 0.18s ease, border-color 0.18s ease, transform 0.18s ease !important;
+          min-height: 50px !important;
+          padding: 0 12px !important;
+          transition: border-color 0.18s ease, box-shadow 0.18s ease !important;
+          box-shadow: none !important;
         }
-        div[data-testid="stTextInputRootElement"]:focus-within {
-          border-color: #1a73e8 !important;
-          box-shadow: 0 0 0 4px rgba(26,115,232,.14), 0 10px 22px rgba(60,64,67,.18) !important;
-          transform: translateY(-1px) !important;
+        div[data-testid="stForm"] div[data-testid="stTextInputRootElement"]:focus-within {
+          border-color: var(--brand) !important;
+          box-shadow: 0 0 0 4px var(--brand-soft) !important;
         }
-        div[data-testid="stTextInputRootElement"] > div,
-        div[data-testid="stTextInputRootElement"] [data-baseweb="base-input"],
-        div[data-testid="stTextInputRootElement"] [data-baseweb="input"] {
+        div[data-testid="stForm"] div[data-testid="stTextInputRootElement"] > div,
+        div[data-testid="stForm"] div[data-testid="stTextInputRootElement"] [data-baseweb="base-input"],
+        div[data-testid="stForm"] div[data-testid="stTextInputRootElement"] [data-baseweb="input"] {
           background: transparent !important;
           border: 0 !important;
           box-shadow: none !important;
           min-height: 0 !important;
           padding: 0 !important;
         }
-        div[data-testid="stTextInputRootElement"] input {
+        div[data-testid="stForm"] div[data-testid="stTextInputRootElement"] input {
           background: transparent !important;
           color: var(--ink) !important;
-          font-size: 20px !important;
-          font-weight: 450 !important;
-          padding-left: 22px !important;
-          padding-right: 22px !important;
-          line-height: 1.2 !important;
-          caret-color: #1a73e8 !important;
+          font-size: 16px !important;
+          padding-left: 4px !important;
+          padding-right: 4px !important;
+          caret-color: var(--brand) !important;
         }
-        div[data-testid="stTextInputRootElement"] input::placeholder {
-          color: #80868b !important;
+        div[data-testid="stForm"] div[data-testid="stTextInputRootElement"] input::placeholder {
+          color: #8693a5 !important;
           opacity: 1 !important;
-          font-size: 20px !important;
         }
-        div[data-testid="stTextInputRootElement"] input:focus::placeholder {
-          color: #9aa0a6 !important;
+        div[data-testid="stForm"] div[data-testid="stNumberInput"] [data-baseweb="input"] {
+          border: 1px solid var(--line) !important;
+          border-radius: 999px !important;
+          min-height: 50px !important;
+          transition: border-color 0.18s ease, box-shadow 0.18s ease !important;
+          box-shadow: none !important;
+          background: #fff !important;
         }
-        div[data-testid="stButton"] {
-          text-align: center;
-          margin-top: 10px;
+        div[data-testid="stForm"] div[data-testid="stNumberInput"] [data-baseweb="input"]:focus-within {
+          border-color: var(--brand) !important;
+          box-shadow: 0 0 0 4px var(--brand-soft) !important;
         }
-        div[data-testid="stButton"] button {
+        div[data-testid="stForm"] div[data-testid="stNumberInput"] input {
+          color: var(--ink) !important;
+          font-size: 16px !important;
+          font-weight: 600 !important;
+        }
+        div[data-testid="stForm"] div[data-testid="stFormSubmitButton"] {
+          margin-top: 0 !important;
+        }
+        div[data-testid="stForm"] div[data-testid="stFormSubmitButton"] button {
+          width: 100%;
           border: 0 !important;
           border-radius: 999px !important;
-          background: linear-gradient(135deg, #3f83f8 0%, #2463eb 100%) !important;
-          color: #ffffff !important;
-          font-size: 20px !important;
-          font-weight: 650 !important;
-          height: 54px !important;
-          min-width: 220px !important;
-          padding: 0 30px !important;
-          margin-top: 0 !important;
-          white-space: nowrap !important;
-          display: inline-flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          letter-spacing: 0.2px !important;
-          box-shadow: 0 6px 14px rgba(36,99,235,.24) !important;
-          transition: transform 0.14s ease, box-shadow 0.14s ease !important;
+          background: linear-gradient(135deg, #2f66ff, #2e8bff) !important;
+          color: #fff !important;
+          font-size: 16px !important;
+          font-weight: 700 !important;
+          min-height: 44px !important;
+          box-shadow: 0 6px 14px rgba(49,101,246,.24) !important;
         }
-        div[data-testid="stButton"] button:hover {
-          box-shadow: 0 10px 18px rgba(36,99,235,.3) !important;
-          transform: translateY(-1px) !important;
-        }
-        div[data-testid="stButton"] button:active {
-          transform: translateY(0);
-          box-shadow: 0 4px 10px rgba(36,99,235,.22) !important;
+        div[data-testid="stForm"] div[data-testid="stFormSubmitButton"] button:hover {
+          filter: brightness(1.04);
         }
         .helper {
-          text-align: center;
-          margin: 18px auto 0;
+          margin: 10px 2px 2px;
           color: var(--muted);
-          font-size: 14px;
-          max-width: 980px;
+          font-size: 12px;
           line-height: 1.45;
         }
         .status {
-          text-align: center;
-          margin: 12px auto 30px;
+          margin: 10px 2px 0;
           color: var(--muted);
-          font-size: 14px;
+          font-size: 13px;
           min-height: 20px;
         }
         .results-head {
           display: flex;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          margin: 16px auto 16px;
-          gap: 4px;
-          flex-direction: column;
+          align-items: baseline;
+          justify-content: space-between;
+          margin: 12px 2px 10px;
+          gap: 10px;
           flex-wrap: wrap;
         }
         .results-title {
           margin: 0;
-          color: #202124;
-          font-size: 26px;
+          color: var(--ink);
+          font-size: 15px;
           font-weight: 650;
         }
         .results-note {
           margin: 0;
           color: var(--muted);
-          font-size: 13px;
+          font-size: 12px;
         }
         .results {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(240px, 320px));
-          justify-content: center;
-          gap: 14px;
+          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+          gap: 12px;
         }
         .card {
           background: var(--card);
-          border: 1px solid #e8eaed;
-          border-radius: 14px;
+          border: 1px solid #d8e2f0;
+          border-radius: 16px;
           overflow: hidden;
-          box-shadow: 0 1px 3px rgba(60,64,67,.12);
-          transition: transform 0.15s ease;
+          box-shadow: 0 4px 14px rgba(22, 43, 76, 0.06);
+          transition: transform 0.16s ease, box-shadow 0.16s ease;
         }
-        .card:hover { transform: translateY(-2px); }
+        .card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 26px rgba(22, 43, 76, 0.14);
+        }
         .thumb {
           width: 100%;
           aspect-ratio: 4 / 3;
           object-fit: cover;
           display: block;
-          background: #f1f3f4;
+          background: #eef2f8;
         }
         .thumb-missing {
           display: grid;
@@ -308,36 +323,25 @@ def main():
           font-size: 12px;
         }
         .meta { padding: 10px 12px 12px; font-size: 13px; line-height: 1.5; }
-        .score { color: var(--brand); font-weight: 700; }
+        .score { color: #1f4dd6; font-weight: 700; }
         .id {
-          color: var(--muted);
+          color: #53657a;
           font-family: "Menlo", "Monaco", "Courier New", monospace;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
-        .empty { color: var(--muted); margin-top: 6px; text-align: center; }
+        .empty {
+          color: var(--muted);
+          margin-top: 6px;
+        }
         @media (max-width: 900px) {
-          .hero { min-height: 22vh; }
-          .logo { font-size: clamp(62px, 13vw, 90px); }
-          .subtitle { font-size: 15px; }
-          div[data-testid="stTextInputRootElement"] { min-height: 60px !important; }
-          div[data-testid="stTextInputRootElement"] input,
-          div[data-testid="stTextInputRootElement"] input::placeholder {
-            font-size: 18px !important;
-          }
-          div[data-testid="stButton"] button {
-            min-width: 170px !important;
-            height: 48px !important;
-            font-size: 17px !important;
-          }
-          .helper { font-size: 13px; }
-          .status { font-size: 13px; min-height: 22px; }
-          .results-title { font-size: 24px; }
-          .results-note { font-size: 12px; }
-          .results {
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            justify-content: stretch;
+          .hero { min-height: 32vh; }
+          .logo { font-size: clamp(54px, 13vw, 76px); }
+          .subtitle { font-size: 14px; }
+          div[data-testid="stForm"] {
+            border-radius: 20px;
+            padding: 14px;
           }
         }
         </style>
@@ -350,7 +354,7 @@ def main():
         <section class="hero">
           <div>
             <h1 class="logo">Lens<span class="logo-accent">Seek</span></h1>
-            <p class="subtitle">Search images in natural language.</p>
+            <p class="subtitle">Search images with natural language. Type what you want to see, and the engine returns semantically similar photos.</p>
           </div>
         </section>
         """,
@@ -363,34 +367,62 @@ def main():
         st.session_state["last_elapsed_ms"] = None
     if "last_query" not in st.session_state:
         st.session_state["last_query"] = ""
+    if "last_k" not in st.session_state:
+        st.session_state["last_k"] = 8
+    if "query_input" not in st.session_state:
+        st.session_state["query_input"] = st.session_state.get("last_query", "")
+    if "k_input" not in st.session_state:
+        st.session_state["k_input"] = 8
 
     image_file = choose_embeddings_file()
     if image_file is None:
         st.error("Embedding file not found. Expected demo_data/image_embeddings_demo.jsonl or data/image_embeddings.jsonl")
         st.stop()
 
-    outer_l, outer_c, outer_r = st.columns([0.8, 7.4, 0.8])  # 中间列控制搜索框宽度
-    with outer_c:
-        query = st.text_input(
-            "searchbox_hidden",
-            value=st.session_state.get("last_query", ""),
-            placeholder="Search images...",
-            label_visibility="collapsed",
-            autocomplete="off",  # 关闭浏览器自动补全，避免浮层重叠
-        )
-        c1, c2, c3 = st.columns([3, 2, 3])
-        with c2:
-            submitted = st.button("Search", use_container_width=False)
-
-    st.markdown(
-        "<p class='helper'>Try: \"a dog running on grass\" · \"people hiking in mountains\" · \"city street at night\"</p>",
-        unsafe_allow_html=True,
-    )
-
     status_text = "Ready. Enter a query and click Search."
+    if st.session_state.get("last_results"):
+        status_text = (
+            f'Query: "{st.session_state.get("last_query", "")}" · '
+            f'{len(st.session_state.get("last_results", []))} results · '
+            f'{st.session_state.get("last_elapsed_ms", 0)} ms'
+        )
+
+    outer_l, outer_c, outer_r = st.columns([0.6, 10.8, 0.6])  # 中间列控制整体搜索区宽度
+    with outer_c:
+        with st.form("search_form", clear_on_submit=False):
+            query_col, k_col, action_col = st.columns([1.0, 0.34, 0.22], gap="small")
+            with query_col:
+                st.markdown("<label class='label'>Search Query (describe the image you want)</label>", unsafe_allow_html=True)
+                query = st.text_input(
+                    "search_query",
+                    key="query_input",
+                    placeholder="e.g. a dog running on grass",
+                    label_visibility="collapsed",
+                    autocomplete="off",
+                )
+            with k_col:
+                st.markdown("<label class='label'>Top-K (how many results)</label>", unsafe_allow_html=True)
+                k_value = st.number_input(
+                    "top_k",
+                    min_value=1,
+                    max_value=20,
+                    step=1,
+                    key="k_input",
+                    label_visibility="collapsed",
+                )
+            with action_col:
+                st.markdown("<label class='label'>Action</label>", unsafe_allow_html=True)
+                submitted = st.form_submit_button("Search", use_container_width=True)
+
+            st.markdown(
+                "<p class='helper'>Tip: Use subject + action + scene, for example: \"two children playing football in a park\".</p>",
+                unsafe_allow_html=True,
+            )
+            status_placeholder = st.empty()
 
     if submitted:
-        query_clean = query.strip()
+        query_clean = str(query).strip()
+        k_int = int(k_value)
         if query_clean == "":
             status_text = "Query cannot be empty."
         else:
@@ -398,28 +430,22 @@ def main():
                 with st.spinner("Searching..."):
                     start = time.perf_counter()
                     query_embedding = encode_query_live(query_clean)
-                    results = get_searcher(str(image_file)).search(query_embedding, k=8)
+                    results = get_searcher(str(image_file)).search(query_embedding, k=k_int)
                     elapsed_ms = int((time.perf_counter() - start) * 1000)
 
                 st.session_state["last_results"] = results
                 st.session_state["last_elapsed_ms"] = elapsed_ms
                 st.session_state["last_query"] = query_clean
+                st.session_state["last_k"] = k_int
                 status_text = f'Query: "{query_clean}" · {len(results)} results · {elapsed_ms} ms'
             except Exception as e:
                 status_text = "Search failed. Please retry."
                 st.error(f"Runtime error: {e}")
 
-    elif st.session_state.get("last_results"):
-        status_text = (
-            f'Query: "{st.session_state.get("last_query", "")}" · '
-            f'{len(st.session_state.get("last_results", []))} results · '
-            f'{st.session_state.get("last_elapsed_ms", 0)} ms'
-        )
-
-    st.markdown(f"<div class='status'>{html.escape(status_text)}</div>", unsafe_allow_html=True)
+    status_placeholder.markdown(f"<div class='status'>{html.escape(status_text)}</div>", unsafe_allow_html=True)
 
     st.markdown(
-        "<section class='results-head'><h2 class='results-title'>Image Results</h2><p class='results-note'>Sorted by vector similarity score.</p></section>",
+        "<section class='results-head'><h2 class='results-title'>Visual Matches</h2><p class='results-note'>Sorted by vector similarity score.</p></section>",
         unsafe_allow_html=True,
     )
 
